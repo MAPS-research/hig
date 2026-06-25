@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Primary Meta Tags -->
+  <meta name="title" content="Histogram-constrained Image Generation">
+  <meta name="description" content="HIG is a training-free, plug-and-play control mechanism that enforces user-specified distributional constraints (color or latent-token histograms) on diffusion models with exact precision, by modeling control as an optimal transport problem.">
+  <meta name="keywords" content="diffusion models, controllable generation, optimal transport, color histogram, distributional control, information embedding, latent tokens, image generation">
+  <meta name="author" content="Haoming Liu, Yuanhe Guo, Yijia Cao, Shenji Wan, Hongyi Wen">
+  <meta name="robots" content="index, follow">
+  <meta name="language" content="English">
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="NYU Center for Data Science">
+  <meta property="og:title" content="Histogram-constrained Image Generation">
+  <meta property="og:description" content="A training-free, plug-and-play control mechanism that enforces user-specified distributional constraints on diffusion models with exact precision, via optimal transport.">
+  <meta property="og:url" content="https://maps-research.github.io/hig/">
+  <meta property="og:image" content="static/images/Header.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Histogram-constrained Image Generation - Research Preview">
+  <meta property="article:published_time" content="2026-01-01T00:00:00.000Z">
+  <meta property="article:author" content="Haoming Liu">
+  <meta property="article:section" content="Research">
+  <meta property="article:tag" content="diffusion models">
+  <meta property="article:tag" content="optimal transport">
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Histogram-constrained Image Generation">
+  <meta name="twitter:description" content="A training-free, plug-and-play control mechanism that enforces user-specified distributional constraints on diffusion models with exact precision, via optimal transport.">
+  <meta name="twitter:image" content="static/images/Header.png">
+
+  <!-- Academic/Research Specific -->
+  <meta name="citation_title" content="Histogram-constrained Image Generation">
+  <meta name="citation_author" content="Liu, Haoming">
+  <meta name="citation_author" content="Guo, Yuanhe">
+  <meta name="citation_author" content="Cao, Yijia">
+  <meta name="citation_author" content="Wan, Shenji">
+  <meta name="citation_author" content="Wen, Hongyi">
+  <meta name="citation_publication_date" content="2026">
+
+  <!-- Additional SEO -->
+  <meta name="theme-color" content="#2563eb">
+  <meta name="msapplication-TileColor" content="#2563eb">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+
+  <!-- Preconnect for performance -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net">
+
+  <title>Histogram-constrained Image Generation</title>
+
+  <!-- Favicon and App Icons -->
+  <link rel="icon" type="image/png" href="static/images/logo.png">
+  <link rel="apple-touch-icon" href="static/images/logo.png">
+
+  <!-- Critical CSS -->
+  <link rel="stylesheet" href="static/css/bulma.min.css">
+  <link rel="stylesheet" href="static/css/index.css">
+
+  <!-- Non-critical CSS -->
+  <link rel="preload" href="static/css/fontawesome.all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <link rel="preload" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+
+  <noscript>
+    <link rel="stylesheet" href="static/css/fontawesome.all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+  </noscript>
+
+  <!-- KaTeX for math rendering -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+    onload="renderMathInElement(document.body, {delimiters: [{left: '$$', right: '$$', display: true}, {left: '$', right: '$', display: false}]});"></script>
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Scripts -->
+  <script defer src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script defer src="static/js/fontawesome.all.min.js"></script>
+  <script defer src="static/js/index.js"></script>
+
+  <!-- Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "ScholarlyArticle",
+    "headline": "Histogram-constrained Image Generation",
+    "description": "A training-free, plug-and-play control mechanism that enforces user-specified distributional constraints on diffusion models with exact precision, via optimal transport.",
+    "author": [
+      {"@type": "Person", "name": "Haoming Liu", "affiliation": {"@type": "Organization", "name": "New York University"}},
+      {"@type": "Person", "name": "Yuanhe Guo", "affiliation": {"@type": "Organization", "name": "New York University"}},
+      {"@type": "Person", "name": "Yijia Cao", "affiliation": {"@type": "Organization", "name": "New York University Shanghai"}},
+      {"@type": "Person", "name": "Shenji Wan", "affiliation": {"@type": "Organization", "name": "New York University"}},
+      {"@type": "Person", "name": "Hongyi Wen", "affiliation": {"@type": "Organization", "name": "New York University"}}
+    ],
+    "datePublished": "2026",
+    "url": "https://maps-research.github.io/hig/",
+    "keywords": ["diffusion models", "controllable generation", "optimal transport", "color histogram", "distributional control", "information embedding"],
+    "isAccessibleForFree": true
+  }
+  </script>
+</head>
+<body>
+
+  <!-- Scroll to Top Button -->
+  <button class="scroll-to-top" onclick="scrollToTop()" title="Scroll to top" aria-label="Scroll to top">
+    <i class="fas fa-chevron-up"></i>
+  </button>
+
+  <main id="main-content">
+  <section class="hero">
+    <div class="hero-body">
+      <div class="container is-max-desktop">
+        <div class="columns is-centered">
+          <div class="column has-text-centered">
+            <h1 class="title is-1 publication-title">Histogram-constrained Image Generation</h1>
+            <h2 class="subtitle is-4 publication-subtitle">Exact, Training-Free Distributional Control for Diffusion Models<br>via Optimal Transport (ECCV 2026)</h2>
+            <div class="is-size-5 publication-authors">
+              <span class="author-block"><a href="https://hmdliu.site/" target="_blank">Haoming Liu</a><sup>1,2</sup>,</span>
+              <span class="author-block"><a href="https://ricercarg.github.io/" target="_blank">Yuanhe Guo</a><sup>1,2</sup>,</span>
+              <span class="author-block"><a href="#" target="_blank">Yijia Cao</a><sup>1</sup>,</span>
+              <span class="author-block"><a href="https://scholar.google.com/citations?user=5lnIJhIAAAAJ&hl=en" target="_blank">Shenji Wan</a><sup>1,2</sup>,</span>
+              <span class="author-block"><a href="https://whongyi.github.io/" target="_blank">Hongyi Wen</a><sup>1,2</sup></span>
+            </div>
+
+            <div class="is-size-5 publication-authors">
+              <span class="author-block"><sup>1</sup> Center for Data Science, New York University Shanghai</span><br>
+              <span class="author-block"><sup>2</sup> New York University</span>
+            </div>
+
+            <div class="column has-text-centered">
+              <div class="publication-links">
+                <!-- TODO: replace arXiv id placeholders below once available -->
+                <span class="link-block">
+                  <a href="https://arxiv.org/pdf/XXXX.XXXXX" target="_blank" class="external-link button is-normal is-rounded is-dark">
+                    <span class="icon"><i class="fas fa-file-pdf"></i></span>
+                    <span>Paper</span>
+                  </a>
+                </span>
+
+                <span class="link-block">
+                  <a href="https://arxiv.org/abs/XXXX.XXXXX" target="_blank" class="external-link button is-normal is-rounded is-dark">
+                    <span class="icon"><i class="ai ai-arxiv"></i></span>
+                    <span>arXiv</span>
+                  </a>
+                </span>
+
+                <span class="link-block">
+                  <a class="external-link button is-normal is-rounded is-dark" style="cursor: not-allowed; opacity: 0.6;" title="Code coming soon">
+                    <span class="icon"><i class="fab fa-github"></i></span>
+                    <span>Code (Coming Soon)</span>
+                  </a>
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Overview -->
+  <section class="section hero is-light">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered">
+        <div class="column is-four-fifths">
+          <h2 class="title is-3 has-text-centered">Overview</h2>
+          <div class="figure-container">
+            <img src="static/images/Overview.png" alt="Overview of HIG: OT-based guidance intervenes in the diffusion process">
+          </div>
+          <div class="content has-text-justified">
+            <p>
+              <strong>TL;DR:</strong> Controllable generation spans a spectrum of granularity: text prompts and LoRAs steer generation <strong>globally</strong>, while ControlNets anchor <strong>local</strong> structure. <strong>HIG fills the middle ground</strong> by regulating the <em>distributional</em> properties of an image. Given any target histogram over pixel colors or latent tokens, HIG drives the diffusion trajectory to match it <u>exactly</u>, using a <u>minimal-cost optimal transport</u> plan applied as <u>inference-time guidance</u>. It is <strong>training-free, interpretable, lightweight, and fully compatible</strong> with existing controls.
+            </p>
+          </div>
+
+          <!-- <h4>Three key properties</h4> -->
+          <!-- <div class="content has-text-justified">
+            <ul>
+              <li><strong>Flexibility:</strong> enforces distributional consistency over diverse targets (pixel-color and latent-token histograms), enabling wide applications.</li>
+              <li><strong>Precision &amp; Optimality:</strong> formalized as optimal transport, yielding the minimal-cost transformation that satisfies the target <em>exactly</em>, which unlocks uses that demand perfect compliance (e.g., information embedding).</li>
+              <li><strong>Lightweight &amp; Compatible:</strong> training-free, negligible inference overhead, plug-and-play, and orthogonal to established controls.</li>
+            </ul>
+          </div> -->
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Method -->
+  <section class="section">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered">
+        <div class="column is-four-fifths">
+          <h2 class="title is-3 has-text-centered">Method</h2>
+          <div class="content has-text-justified">
+
+            <h4>1. Inference-time guidance via explicit transformations</h4>
+            <p>
+              Rather than manipulating the noise prediction $\epsilon_\theta(z_t, c, t)$ through auxiliary inputs (ControlNet) or extra weights (LoRA), HIG explicitly transforms the intermediate clean-image estimate $z_0^{t}$ via a <em>decode &rarr; transform &rarr; encode</em> cycle:
+            </p>
+
+            <div class="math-block">
+              $$z_0^{t\prime} = \text{VAE-encode}\big(\, \varphi(\, \text{VAE-decode}(z_0^{t})\,)\,\big)$$
+            </div>
+
+            <p>
+              The transformed latent continues the sampling trajectory. Guidance $\varphi$ is applied only on a subset of steps $\mathcal{T}$. Because the OT formulation minimizes transport cost, the intervention stays minimally invasive and later steps refine the output, preserving fidelity.
+            </p>
+
+            <h4>2. Histogram matching with optimal transport</h4>
+            <p>
+              A histogram is a discrete distribution over $d$ bins (uniform partitions for RGB colors, token indices for discrete tokens). Given source $h_{\text{src}}$ and target $h_{\text{tgt}}$, HIG solves the OT plan $\gamma$ minimizing transport cost $\langle \gamma, M \rangle$ under the marginal constraints, specifying exactly how many pixels or tokens move between bins. We then sample source units and reassign them to target-bin values. Specifically, we consider two binning strategies:
+            </p>
+            <ul>
+              <li><strong>Single-option binning:</strong> each bin is one color range or token.</li>
+              <li><strong>Multi-option binning:</strong> each bin holds $k$ candidates and only the aggregate per-bin mass is constrained, so intra-bin assignments pick the closest match, reducing distortion.</li>
+            </ul>
+            <p>
+              A vanilla network-simplex solver matches a $d = 4096$ histogram on $1024^2$ images in ~0.2s.
+            </p>
+
+            <div class="figure-container">
+              <img src="static/images/Binning.png" alt="Exemplar OT plans for single-option and multi-option binning" width="80%">
+            </div>
+
+            <h4>3. Constructing target histograms</h4>
+            <ul>
+              <li><strong>From reference images:</strong> compute the histogram of a reference and use it as the target. An optional post-hoc OT step guarantees exact compliance when needed.</li>
+              <li><strong>From continuous vectors:</strong> map a vector deterministically to a target color distribution, enabling information embedding (below).</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Applications & Results -->
+  <section class="section hero is-light">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered">
+        <div class="column is-four-fifths">
+          <h2 class="title is-3 has-text-centered">Applications &amp; Results</h2>
+          <div class="content has-text-justified">
+
+            <h4>A. Color-constrained generation</h4>
+            <p>
+              HIG matches a target color histogram exactly while preserving prompt compliance and aesthetics. On a benchmark of 300 prompts &times; 300 reference images, it achieves the <strong>best histogram alignment</strong> (HistKL &rarr; 0.00 with post-hoc OT), <strong>best prompt compliance</strong> (CLIP 27.19), and <strong>best aesthetics</strong> (6.78) against other control baselines. Applying OT <em>during</em> denoising, rather than directly on the final image, removes artifacts from rigid pixel reassignment, at overhead (~2.2s) comparable to LoRAs and ControlNets.
+            </p>
+
+            <div class="figure-container">
+              <img src="static/images/Comparison.png" alt="Qualitative comparison vs. baselines with HistKL annotations">
+            </div>
+
+            <div class="figure-container">
+              <img src="static/images/Qual_color.png" alt="Color-constrained qualitative results: OT-based guidance alleviates artifacts">
+            </div>
+
+            <h4>B. High-capacity information embedding</h4>
+            <p>
+              HIG can hide text inside an ordinary-looking image via its color distribution. A soft prompt, tuned so that an LLM (Llama-3.1-8B) reproduces a target sentence, is deterministically mapped to a target histogram; exact histogram alignment lets the text be decoded back.
+            </p>
+            <ul>
+              <li>Embeds up to <strong>512 text tokens</strong> per image, faithfully decodable.</li>
+              <li>Exact decoding rate:<strong>&gt;97%</strong> at 256 tokens, <strong>&gt;90%</strong> at 512 tokens.</li>
+            </ul>
+
+            <div class="figure-container">
+              <img src="static/images/InfoEmbed.png" alt="Information-embedding workflow diagram" width="85%">
+            </div>
+
+            <div class="figure-container">
+              <img src="static/images/Qual_info.png" alt="Information-embedding qualitative results, each image hides 512 tokens">
+            </div>
+
+            <h4>C. Latent histogram matching (preliminary)</h4>
+            <p>
+              As a proof of concept, HIG extends from pixel space to the discrete codebooks of image tokenizers (VQ-GAN, TokenFlow, TiTok), where the control effect ranges from color-scheme-like to semantic or spatial depending on what the latent encodes. Results here are empirically unstable and highly bounded by the tokenizer decoder, so we treat this as a preliminary direction rather than a reliable application.
+            </p>
+
+            <div class="figure-container">
+              <img src="static/images/Qual_latent.png" alt="Latent-token histogram manipulation across tokenizers yields varying control effects">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Takeaways -->
+  <section class="section">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered">
+        <div class="column is-four-fifths">
+          <h2 class="title is-3 has-text-centered">Takeaways</h2>
+          <div class="content has-text-justified">
+            <ul>
+              <li>HIG adds a new, orthogonal control axis (distributional control) that complements text, structure, and style, and composes with existing controls.</li>
+              <li>The OT formulation gives exact, minimal-cost compliance, enabling precision-critical uses such as information embedding.</li>
+              <li>It is training-free and lightweight, with negligible inference overhead.</li>
+              <!-- <li><strong>Limitations:</strong> random sampling during OT can introduce artifacts (spatially-aware transport may help), and explicit transformation can cause sharp transitions (softer interpolation is future work).</li>
+              <li><strong>Broader impact:</strong> information embedding aids secure transmission but risks misuse; detection classifiers are a potential safeguard.</li> -->
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- BibTeX -->
+  <section class="section" id="BibTeX">
+    <div class="container is-max-desktop content">
+      <div class="bibtex-header">
+        <h2 class="title">BibTeX</h2>
+        <button class="copy-bibtex-btn" onclick="copyBibTeX()" title="Copy BibTeX to clipboard">
+          <i class="fas fa-copy"></i>
+          <span class="copy-text">Copy</span>
+        </button>
+      </div>
+      <pre id="bibtex-code"><code>@inproceedings{liu2026hig,
+  title     = {Histogram-constrained Image Generation},
+  author    = {Liu, Haoming and Guo, Yuanhe and Cao, Yijia and Wan, Shenji and Wen, Hongyi},
+  booktitle = {European Conference on Computer Vision (ECCV)},
+  year      = {2026}
+}</code></pre>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="columns is-centered">
+        <div class="column is-8">
+          <div class="content">
+            <p>
+              This page was built using the <a href="https://github.com/eliahuhorwitz/Academic-project-page-template" target="_blank">Academic Project Page Template</a> which was adopted from the <a href="https://nerfies.github.io" target="_blank">Nerfies</a> project page.
+              You are free to borrow the source code of this website, we just ask that you link back to this page in the footer. <br> This website is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/" target="_blank">Creative
+              Commons Attribution-ShareAlike 4.0 International License</a>.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  </main>
+
+</body>
+</html>
